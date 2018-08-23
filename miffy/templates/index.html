@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" type="text/javascript" content="text/html; charset="utf-8" />
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<title>扬乔积分管理系统</title>
+</head>
+
+<body>
+<table width="458" border="1">
+  <tr>
+    <td>群名称：</td>
+    <td><label>
+      <input type="text" id="groupname" />
+    </label></td>
+    <td><label>
+      <input type="submit" id="addgroup" value="增加群" />
+    </label></td>
+    <td><button id="cleargroup">清空群</button></td>
+    <td><button id="clearperson">清空积分</button></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+
+<table id="tbAddPerson" width="200" border="1"></table>
+<table id="tbShowPerson" border="1"  class="display hover cell-border  border-blue-1" ></table>
+
+</body>
+</html>
+
+<script>
+
+var colume = {data:[
+                {name: "所属群", id: "pgid"},
+                {name: "米王", id: "miwang"},
+                {name: "米妃", id: "mifei"},
+                {name: "米小主", id: "mixiaozhu"},
+                {name: "米粉", id: "mifen"},
+                {name: "早安", id: "zhaoan"},
+                {name: "晚安", id: "wangan"},
+                {name: "试用装", id: "shiyonzhang"},
+                {name: "回访", id: "huifang"},
+                {name: "地推", id: "ditui"},
+                {name: "引流", id: "yingliu"},
+                {name: "分享经验", id: "fenxiang"},
+                {name: "值班", id: "zhibang"},
+                {name: "零售", id: "linshe"}
+             ]};
+
+function init_table()
+{
+    var selnum = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10];
+    var row = '';
+
+    for (var i in colume.data) {
+        row = '<tr>'
+            + '<td>' + colume.data[i].name + '：</td>'
+            + '<td><select id="sel' + colume.data[i].id + '"></select></td>'
+            + '</tr>';
+
+        $("#tbAddPerson").append(row);
+
+        if (i == 0) {
+            continue;
+        }
+        
+        for (var j = 0; j < selnum.length; j++)
+        {
+            seltxt = "<option value='" + selnum[j] +  "'>" + selnum[j] + "</option>";
+
+            $("#sel" + colume.data[i].id).append(seltxt);
+        }
+    }
+
+    row = '<tr>'
+        + '<td><button id=\"addperson\">提交</button></td>'
+        + '<td></td>'
+        + '</tr>';
+    $("#tbAddPerson tbody:last").append(row);
+
+    row = '<tr width="150px"><th width="70px">序号</th>';
+
+    for (var i in colume.data) {
+        row += '<th width="70px">' + colume.data[i].name + '</th>';
+    }
+
+    row += '<th width="70px">积分</th>';
+
+    $("#tbShowPerson").append(row);
+}
+
+function show_group(data)
+{
+    var obj = JSON.parse(data);
+
+    if (obj.result < 0) {
+        alert(obj.msg);
+        return false;
+    }
+    
+    $("#sel" + colume.data[0].id).empty();
+        
+    for (var i in obj.data) {
+        seltxt = "<option value='" + obj.data[i].gid +  "'>" + obj.data[i].gname + "</option>";
+        $("#sel" + colume.data[0].id).append(seltxt);
+    }
+
+    return true;
+}
+
+function show_person(data)
+{
+    var obj = JSON.parse(data);
+
+    if (obj.result < 0) {
+        alert(obj.msg);
+        return false;
+    }
+
+    for (var i = $("#tbShowPerson").find("tr").length - 1; i >= 1; --i) {
+        $('#tr' + i).remove();
+    }
+
+    var no = 0;
+    var row = '';
+    
+    if (obj.data.length == 0) {
+        return
+    }
+    
+    for (var i in obj.data) {
+        no = no + 1;
+        row = '';
+        row += '<tr id="tr' + no + '">' + '<td>' + obj.data[i].no + '</td>';
+            
+        for (var j in colume.data) {
+            row += '<td>' + eval('obj.data['+ i +'].' + colume.data[j].id) + '</td>';
+        }
+        
+        row += '<td>' + obj.data[i].total + '</td></tr>';
+
+        $("#tbShowPerson tbody:last").append(row);
+    }
+
+    /*
+    row = '';
+    no = no + 1;
+    row += '<tr id="tr' + no + '">' + '<td>总计</td>';
+        
+    for (var j in colume.data) {
+        row += '<td>' + eval('obj.total.' + colume.data[j].id) + '</td>';
+    }
+    
+    row += '<td>' + obj.total.total + '</td></tr>';
+
+    $("#tbShowPerson tbody:last").append(row);
+    */
+    
+    return true;
+}
+
+
+function miffy_init()
+{
+    init_table();
+
+    $.ajax({
+        type: "get",
+        url: "show_group",
+        success: function(data){
+            show_group(data);
+        }
+    });
+
+    $.ajax({
+        type: "get",
+        url: "show_person",
+        success: function(data){
+            show_person(data);
+        }
+    });
+
+
+}
+
+$(document).ready(function(){
+    miffy_init();
+
+    $("#addperson").click(function(){
+    
+        post_data = "";
+        
+        for (var i in colume.data) {
+            if (i != 0){
+                post_data += "&";
+            }
+            post_data += colume.data[i].id;
+            post_data += "=";
+            post_data += $("#sel" + colume.data[i].id).val();
+        }
+
+        $.ajax({
+            type: "get",
+            url: "add_person",
+            data: post_data,
+            success: function(data){
+                if (show_person(data)) {
+                    for (var i in colume.data) {
+                        $("#sel" + colume.data[i].id).val(0);
+                    }
+                }
+            }
+        });
+    });
+
+    $("#addgroup").click(function(){
+
+        groupname = $("#groupname").val();
+        if (groupname == "") {
+            alert("请输入群名称" + groupname);
+            return;
+        }
+        
+        post_data = "name=" + groupname;
+
+        $.ajax({
+            type: "get",
+            url: "add_group",
+            data: post_data,
+            success: function(data){
+                if (show_group(data)) {
+                    $("#groupname").val('');
+                }
+                
+            }
+        });
+    });
+    
+    $("#cleargroup").click(function(){
+        $.ajax({
+            type: "get",
+            url: "clear_group",
+            data: "",
+            success: function(data){
+                show_group(data);
+            }
+        });
+    });
+    
+    $("#clearperson").click(function(){
+        $.ajax({
+            type: "get",
+            url: "clear_person",
+            data: "",
+            success: function(data){
+                show_person(data);
+            }
+        });
+    });
+    
+});
+</script>

@@ -1,0 +1,447 @@
+<!--index.wxml-->
+<view class="swiper-tab">
+    <view class="swiper-tab-item {{currentTab==0?'active':''}}" data-current="0" bindtap="clickTab">总览</view>
+    <view class="swiper-tab-item {{currentTab==1?'active':''}}" data-current="1" bindtap="clickTab">本人详细</view>       
+    <view class="swiper-tab-item {{currentTab==2?'active':''}}" data-current="2" bindtap="clickTab">添加</view> 
+    <view class="swiper-tab-item {{currentTab==3?'active':''}}" data-current="3" bindtap="clickTab">设置</view>
+    <view class="swiper-tab-item {{currentTab==4?'active':''}}" data-current="4" bindtap="clickTab">秀秀</view>    
+</view>
+<!--style="height: {{clientHeight?clientHeight+'px':'auto'}}"-->
+<swiper  current="{{currentTab}}" duration="300"  bindchange="swiperTab">
+    <swiper-item>
+      <view class="trQuery">
+        <!--view class="td_query_grp_select" hidden="{{!authority}}">
+            <picker bindchange="bindQueryPgidChange" value="{{val_query_pgid}}" range="{{pgidarray}}">
+              {{pgidarray[val_query_pgid]}}
+            </picker>
+        </view-->
+      
+        <view class="thQueryBegin">
+          <picker style='width:100%' mode="date" value="{{sdate}}" start="2015-09-01" end="2017-09-01" bindchange="bindStartDateChange">
+            <view>{{sdate}}</view>
+          </picker>
+        </view>
+        <view class="thQueryEnd">
+          <picker style='width:100%' mode="date" value="{{edate}}" start="2015-09-01" end="2017-09-01" bindchange="bindEndDateChange">
+            <view> 至 {{edate}}</view>
+          </picker>        
+        </view>
+        <view class="thQueryBtn">
+          <button type="primary" size="mini" bindtap="clickBtnQuery"> 查询 </button>
+        </view>        
+      </view>
+
+      <view class="table">
+        <view class="tr bg-w">
+          <view class="th"><label class='sdsf'>序号</label></view>
+          <view class="thGn" hidden="{{!authority}}">群名</view>
+          <view class="th ">米王</view>
+          <view class="th ">米妃</view>
+          <view class="th ">小主</view>
+          <view class="th ">米粉</view>
+          <view class="th " hidden="{{authority}}">零售</view>
+          <view class="th " hidden="{{authority}}">回访</view>
+          <view class="th " hidden="{{!authority}}">合计</view>
+          <view class="th " hidden="{{authority}}">试用</view>
+        </view>
+        <block wx:for="{{listData}}" wx:key="{{code}}" >
+          <view class="tr_Person bg-g" wx:if="{{index % 2 == 0}}"  id="{{item.index}}" bindtap="powerDrawer" data-statu="open" data-idkey="{{item.id}}">
+            <view class="td_Person">{{item.no}}</view>
+            <view class="tdGn" hidden="{{!authority}}">{{item.gname}}</view>
+            <view class="td_Person">{{item.miwang}}</view>
+            <view class="td_Person">{{item.mifei}}</view>
+            <view class="td_Person">{{item.mixiaozhu}}</view>
+            <view class="td_Person">{{item.mifen}}</view>
+            <view class="td_Person" hidden="{{authority}}">{{item.linshe}}</view>
+            <view class="td_Person" hidden="{{authority}}">{{item.huifang}}</view>      
+            <view class="td_Person" hidden="{{!authority}}">{{item.total}}</view>
+            <view class="td_Person" hidden="{{authority}}">{{item.shiyonzhang}}</view>
+          </view>
+          <view class="tr_Person" wx:else  id="{{item.index}}" bindtap="powerDrawer" data-statu="open" data-idkey="{{item.id}}">
+            <view class="td_Person">{{item.no}}</view>
+            <view class="tdGn" hidden="{{!authority}}">{{item.gname}}</view>
+            <view class="td_Person">{{item.miwang}}</view>
+            <view class="td_Person">{{item.mifei}}</view>
+            <view class="td_Person">{{item.mixiaozhu}}</view>
+            <view class="td_Person">{{item.mifen}}</view>
+            <view class="td_Person" hidden="{{authority}}">{{item.linshe}}</view>
+            <view class="td_Person" hidden="{{authority}}">{{item.huifang}}</view>      
+            <view class="td_Person" hidden="{{!authority}}">{{item.total}}</view>
+            <view class="td_Person" hidden="{{authority}}">{{item.shiyonzhang}}</view>
+          </view>
+        </block>
+      </view>
+    </swiper-item>
+    <swiper-item>
+      <view class="trQuery">      
+        <view class="thQueryBegin">
+          <picker style='width:100%' mode="date" value="{{owner_sdate}}" start="2015-09-01" end="2017-09-01" bindchange="bindOwnerStartDateChange">
+            <view>{{owner_sdate}}</view>
+          </picker>
+        </view>
+        <view class="thQueryEnd">
+          <picker style='width:100%' mode="date" value="{{owner_edate}}" start="2015-09-01" end="2017-09-01" bindchange="bindOwnerEndDateChange">
+            <view> 至 {{owner_edate}}</view>
+          </picker>        
+        </view>
+        <view class="thQueryBtn">
+          <button type="primary" size="mini" bindtap="clickOwnerBtnQuery"> 查询 </button>
+        </view>        
+      </view>
+
+      <view class="table">
+        <view class="tr bg-w">
+          <view class="th"><label class='sdsf'>序号</label></view>
+          <view class="th ">米王</view>
+          <view class="th ">米妃</view>
+          <view class="th ">小主</view>
+          <view class="th ">米粉</view>
+          <view class="th ">零售</view>
+          <view class="th ">回访</view>
+          <view class="th ">试用</view>
+        </view>
+        <block wx:for="{{listOwnerData}}" wx:key="{{code}}" >
+          <view class="tr_Person bg-g" wx:if="{{index % 2 == 0}}"  id="{{item.index}}" bindtap="powerOwnerDrawer" data-statu="open" data-idkey="{{item.id}}">
+            <view class="td_Person">{{item.no}}</view>
+            <view class="td_Person">{{item.miwang}}</view>
+            <view class="td_Person">{{item.mifei}}</view>
+            <view class="td_Person">{{item.mixiaozhu}}</view>
+            <view class="td_Person">{{item.mifen}}</view>
+            <view class="td_Person">{{item.linshe}}</view>
+            <view class="td_Person">{{item.huifang}}</view>
+            <view class="td_Person">{{item.shiyonzhang}}</view>
+          </view>
+          <view class="tr_Person" wx:else  id="{{item.index}}" bindtap="powerOwnerDrawer" data-statu="open" data-idkey="{{item.id}}">
+            <view class="td_Person">{{item.no}}</view>            
+            <view class="td_Person">{{item.miwang}}</view>
+            <view class="td_Person">{{item.mifei}}</view>
+            <view class="td_Person">{{item.mixiaozhu}}</view>
+            <view class="td_Person">{{item.mifen}}</view>
+            <view class="td_Person">{{item.linshe}}</view>
+            <view class="td_Person">{{item.huifang}}</view>
+            <view class="td_Person">{{item.shiyonzhang}}</view>
+          </view>
+        </block>
+      </view>
+      <view class='jifentip'><text>\n积分规则：米王500分；米妃200分；米小主100分；米粉50分；零售30分；分享20分；值班20分；引流10分；地推10分；早安5分；晚安5分。</text></view>
+    </swiper-item>
+    <swiper-item>
+      <view class="table">
+          <view class="tr bg-g">
+            <view class="td_label">值班：</view>
+            <view class="td_select">
+              <picker bindchange="bindzhibangPickerChange" value="{{val_zhibang}}" range="{{wangarray}}">
+                <view class="picker">
+                  {{wangarray[val_zhibang]}}
+                </view>
+              </picker>       
+            </view>
+
+            <view class="td_label">米王：</view>
+            <view class="td_select">
+              <picker bindchange="bindMiWangPickerChange" value="{{val_miwang}}" range="{{wangarray}}">
+                  {{wangarray[val_miwang]}}
+              </picker>      
+            </view>
+            <view class="td_label">米妃：</view>
+            <view class="td_select">
+              <picker bindchange="bindMiFeiPickerChange" value="{{val_mifei}}" range="{{wangarray}}">
+                  {{wangarray[val_mifei]}}
+              </picker>      
+            </view>
+          </view>
+          <view class="tr">
+            <view class="td_label">小主：</view>
+            <view class="td_select">
+              <picker bindchange="bindXiaoZhuPickerChange" value="{{val_mixiaozhu}}" range="{{wangarray}}">
+                  {{wangarray[val_mixiaozhu]}}   
+              </picker>      
+            </view>
+            <view class="td_label">米粉：</view>
+            <view class="td_select">
+              <picker bindchange="bindMiFenPickerChange" value="{{val_mifen}}" range="{{wangarray}}">
+                  {{wangarray[val_mifen]}}
+              </picker>      
+            </view>
+            <view class="td_label">早安：</view>
+            <view class="td_select">
+              <picker bindchange="bindzhaoanChange" value="{{val_zhaoan}}" range="{{wangarray}}">
+                <view>
+                  {{wangarray[val_zhaoan]}}
+                </view>
+              </picker>        
+            </view>
+          </view>
+
+          <view class="tr bg-g">
+            <view class="td_label">晚安：</view>
+            <view class="td_select">
+              <picker bindchange="bindwanganChange" value="{{val_wangan}}" range="{{wangarray}}">
+                <view class="picker">
+                  {{wangarray[val_wangan]}}
+                </view>
+              </picker>       
+            </view>
+            <view class="td_label">零售：</view>
+            <view class="td_select">
+              <picker bindchange="bindlinsheChange" value="{{val_linshe}}" range="{{wangarray}}">
+                <view class="picker">
+                  {{wangarray[val_linshe]}}
+                </view>
+              </picker>       
+            </view>      
+            <view class="td_label">回访：</view>
+            <view class="td_select">
+              <picker bindchange="bindhuifangChange" value="{{val_huifang}}" range="{{wangarray}}">
+                <view class="picker">
+                  {{wangarray[val_huifang]}}
+                </view>
+              </picker>       
+            </view>      
+          </view>
+          <view class="tr">
+            <view class="td_label">地推：</view>
+            <view class="td_select">
+              <picker bindchange="binddituiChange" value="{{val_ditui}}" range="{{wangarray}}">
+                <view class="picker">
+                  {{wangarray[val_ditui]}}
+                </view>
+              </picker>       
+            </view>
+            <view class="td_label">引流：</view>
+            <view class="td_select">
+              <picker bindchange="bindyingliuChange" value="{{val_yingliu}}" range="{{wangarray}}">
+                <view class="picker">
+                  {{wangarray[val_yingliu]}}
+                </view>
+              </picker>       
+            </view>
+            <view class="td_label">分享：</view>
+            <view class="td_select">
+              <picker bindchange="bindfenxiangChange" value="{{val_fenxiang}}" range="{{wangarray}}">
+                <view class="picker">
+                  {{wangarray[val_fenxiang]}}
+                </view>
+              </picker>       
+            </view> 
+          </view>
+
+          <view class="tr bg-g">
+            <view width="30%">试用装：</view>
+            <view class="td_select">
+              <picker bindchange="bindshiyonzhangChange" value="{{val_shiyonzhang}}" range="{{wangarray}}">
+                <view class="picker">
+                  {{wangarray[val_shiyonzhang]}}
+                </view>
+              </picker>       
+            </view>
+            <view  class="td_label" hidden="{{!authority}}">群名：</view>
+            <view class="td_grp_select" hidden="{{!authority}}">
+              <picker bindchange="bindPgidChange" value="{{val_pgid}}" range="{{pgidarray}}">
+                {{pgidarray[val_pgid]}}
+              </picker>
+            </view>
+          </view>
+
+          <view class="tr">
+            <view class="td">
+              <button type="primary" size="mini" bindtap="clickBtnAddPerson"> 提交 </button>
+            </view>
+            <view class="td"></view>
+          </view>        
+      </view>    
+    </swiper-item>
+  
+    <swiper-item>
+      <image  src="../../images/setbg.jpg" style='width:100%; height: 100%;position:absolute;z-index:-1; margin-bottom: 0px;'></image>
+      <view class='setView'>
+         
+        <view class="selLineView">
+          <view class="setOwnerlabel">当前所属群：</view>
+          <view>{{pgidarray[owner_grp]}}</view>
+        </view>
+
+        <view class="selLineView">
+          <view class="setlabel">群名：</view>
+          <view class="td_grp_select">
+            <picker bindchange="bindSetPgidChange" value="{{val_set_pgid}}" range="{{pgidarray}}">
+            {{pgidarray[val_set_pgid]}}
+            </picker>
+          </view>
+          <view width="30%"><button type="primary" size="mini" bindtap="clickModifyGrp"> 修改所属群 </button></view> 
+          <view width="30%" style='margin-left: 3px;'><button type="primary" size="mini" bindtap="clickDelGrp" hidden="{{!authority}}"> 删除群 </button></view> 
+        </view>
+
+        <view class="selLineView" hidden="{{!authority}}">
+          <view  class="setlabel">群名：</view>
+          <view class="td_grp_select">
+            <input class="inputText"  style="border:1px;background:rgba(0, 0, 0, 0);" maxlength="20" value="{{inputgrpname}}" placeholder="请输入群名" bindinput="bindAddGrpInput"/>
+          </view>
+          <view width="30%"><button type="primary" size="mini" bindtap="clickAddGrp"> 增加群 </button></view> 
+        </view>
+
+        <view class="selLineView" hidden="{{!authority}}">
+          <view  class="setlabel">积分：</view>
+          <view width="30%"><button type="primary" size="mini" bindtap="clickClearPerson"> 删除所有积分 </button></view> 
+        </view>
+
+        <view class="selLineView" hidden="{{!authority}}">
+          <view  class="setlabel">权限：</view>
+          <view class="td_grp_select">
+            <picker bindchange="bindAuthChange" value="{{val_set_auth}}" range="{{userarray}}">
+            {{userarray[val_set_auth]}}
+            </picker>
+          </view>
+          <view width="30%"><button type="primary" size="mini" bindtap="clickModifyAuth"> {{authbtntext}} </button></view> 
+        </view>
+
+      </view>
+       
+    </swiper-item>
+    <swiper-item>
+   
+    <video src="http://yangqiaomiffy.club/zhoushu.mp4" binderror="videoErrorCallback" ></video>
+    </swiper-item>
+</swiper>
+
+ 
+<!--mask-->
+<view class="drawer_screen" bindtap="powerDrawer" data-statu="close" wx:if="{{showModalStatus}}"></view>
+<!--content-->
+<!--使用animation属性指定需要执行的动画-->
+<view animation="{{animationData}}" class="drawer_box" wx:if="{{showModalStatus}}">
+  <!--drawer content-->
+  <view class="drawer_content">
+    <view class="top grid bg-g">
+      <view class="title col-0">米王：</view>
+      <view  class="input_sum_base input_h30 ">{{grp_show_detail.miwangnum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.miwang}}</view>
+          </view>
+    <view class="top grid">
+      <view class="title col-0">米妃：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.mifeinum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.mifei}}</view>
+    </view>
+    <view class="top grid bg-g">
+      <view class="title col-0">小主：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.mixiaozhunum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.mixiaozhu}}</view>
+          </view>
+    <view class="top grid">
+      <view class="title col-0">米粉：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.mifennum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.mifen}}</view>  
+    </view>
+    <view class="top grid bg-g">
+      <view class="title col-0">早安：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.zhaoannum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.zhaoan}}</view>
+         </view>
+    <view class="top grid">
+      <view class="title col-0">晚安：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.wangannum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.wangan}}</view>           
+    </view>
+    <view class="top grid bg-g">
+      <view class="title col-0">试用装：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.shiyonzhangnum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.shiyonzhang}}</view>
+          </view>
+    <view class="top grid">
+      <view class="title col-0">回访：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.huifangnum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.huifang}}</view>      
+    </view>
+    <view class="top grid bg-g">
+      <view class="title col-0">地推：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.dituinum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.ditui}}</view>
+         </view>
+    <view class="top grid">
+      <view class="title col-0">引流：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.yingliunum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.yingliu}}</view>          
+    </view>
+    <view class="top grid bg-g">
+      <view class="title col-0">分享：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.fenxiangnum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.fenxiang}}</view>
+     </view>
+    <view class="top grid">     
+      <view class="title col-0">值班：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.zhibangnum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.zhibang}}</view>      
+    </view>
+    <view class="top grid bg-g">
+      <view class="title col-0">零售：</view>
+      <view  class="input_sum_base input_h30">{{grp_show_detail.linshenum}}</view>
+      <view class="input_base input_h30 col-1">{{grp_show_detail.linshe}}</view>
+    </view>
+    <view class="top grid">
+      <view class="title col-0">群名：</view>
+      <!--view>{{grp_show_detail.miwang}}</view-->
+      <view class="input_base input_h30 col-1">{{grp_show_detail.gname}}</view>      
+    </view>
+  </view>
+  <view  class="mainShowView">
+    <view class="btn_all_view_ok" bindtap="powerDrawer" data-statu="close">确定</view>
+    <!--view class="btn_ok" bindtap="btn_del_person" data-statu="close">删除</view-->  
+  </view>
+</view>
+
+
+<!--mask-->
+<view class="drawer_screen" bindtap="powerOwnerDrawer" data-statu="close" wx:if="{{showOwnerModalStatus}}"></view>
+<!--content-->
+<!--使用animation属性指定需要执行的动画-->
+<view animation="{{animationOwnerData}}" class="drawer_box" wx:if="{{showOwnerModalStatus}}">
+  <!--drawer content-->
+  <view class="drawer_content">
+    <view class="top grid">
+      <view class="title col-0">米王：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.miwang}}</view>
+      <view class="title col-0">米妃：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.mifei}}</view>          
+    </view>
+    <view class="top grid">
+      <view class="title col-0">小组：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.mixiaozhu}}</view>
+      <view class="title col-0">米粉：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.mifen}}</view>  
+    </view>
+    <view class="top grid">
+      <view class="title col-0">早安：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.zhaoan}}</view>
+      <view class="title col-0">晚安：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.wangan}}</view>           
+    </view>
+    <view class="top grid">
+      <view class="title col-0">试用装：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.shiyonzhang}}</view>
+      <view class="title col-0">回访：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.huifang}}</view>      
+    </view>
+    <view class="top grid">
+      <view class="title col-0">地推：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.ditui}}</view>
+      <view class="title col-0">引流：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.yingliu}}</view>          
+    </view>
+    <view class="top grid">
+      <view class="title col-0">分享：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.fenxiang}}</view>
+      <view class="title col-0">值班：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.zhibang}}</view>      
+    </view>
+    <view class="top grid">
+      <view class="title col-0">零售：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.linshe}}</view>
+      <!--view class="title col-0">群名：</view>
+      <view class="input_base input_h30 col-1">{{owner_detail.pgid}}</view-->      
+    </view>
+  </view>
+  <view  class="mainShowView">
+    <view class="btn_ok" bindtap="powerOwnerDrawer" data-statu="close">确定</view>
+    <view class="btn_ok" bindtap="btn_del_person" data-statu="close">删除</view>  
+  </view>
+</view>
