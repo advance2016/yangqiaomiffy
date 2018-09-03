@@ -88,6 +88,7 @@ Page({
     wx.setStorageSync("authority", data.authority);
     wx.setStorageSync("uuid", data.uuid);
     wx.setStorageSync("group", data.group);
+    wx.setStorageSync("nickname", data.nickname);
   },
 
   getRegisterInfo: function (code) {

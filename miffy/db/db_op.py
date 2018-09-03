@@ -586,7 +586,7 @@ def on_login(request):
         resp = "{\"result\":%d,\"msg\":\"%s\"}" % (-1, ex.message)
         return HttpResponse(resp)
 
-    resp = "{\"result\":%d,\"msg\":\"%s\",\"openid\":\"%s\",\"authority\":%d,\"uuid\":\"%s\"}" % (result, msg, openid, rspdata.authority, rspdata.uuid)
+    resp = "{\"result\":%d,\"msg\":\"%s\",\"openid\":\"%s\",\"authority\":%d,\"uuid\":\"%s\",\"nickname\":\"%s\"}" % (result, msg, openid, rspdata.authority, rspdata.uuid, rspdata.nickname)
     
     return HttpResponse(resp)
     
@@ -619,7 +619,7 @@ def register(request):
         resp = "{\"result\":%d,\"msg\":\"%s\"}" % (-1, "does not exist")
         return HttpResponse(resp)
 
-    resp = "{\"result\":%d,\"msg\":\"%s\",\"authority\":%s,\"uuid\":\"%s\"}" % (result, msg, authority, genuuid)
+    resp = "{\"result\":%d,\"msg\":\"%s\",\"authority\":%s,\"uuid\":\"%s\",\"nickname\":\"%s\"}" % (result, msg, authority, genuuid, nickname)
     
     return HttpResponse(resp)
     
@@ -657,7 +657,37 @@ def modify_auth(request):
     return get_users(request)
     
     
+def modify_nickname(request):
+    name = ''
+    uuidstr = ''
     
+    if request.method == 'POST':
+        req_obj = request.POST
+    elif request.method == 'GET':
+        req_obj = request.GET
+    
+    nickname = req_obj['nickname']
+    uuidstr = req_obj['uuid']
+    
+    if nickname == '':
+        resp = "{\"result\":%d,\"msg\":\"%s\"}" % (-1, "please input nickname name")
+        return HttpResponse(resp)
+        
+    try:
+        obj = models.UserInfo.objects.get(uuid=uuidstr)
+    except ObjectDoesNotExist:
+        resp = "{\"result\":%d,\"msg\":\"%s\"}" % (1, "user does not exist")
+        return HttpResponse(resp)
+    except ex:
+        resp = "{\"result\":%d,\"msg\":\"%s\"}" % (-1, ex.message)
+        return HttpResponse(resp)
+        
+    obj.nickname = nickname
+    obj.save()
+    
+    resp = "{\"result\":%d,\"msg\":\"%s\"}" % (0, "")
+    return HttpResponse(resp)
+
     
     
     

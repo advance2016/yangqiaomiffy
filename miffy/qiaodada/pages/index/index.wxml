@@ -272,6 +272,14 @@
           <view width="30%" style='margin-left: 3px;'><button type="primary" size="mini" bindtap="clickDelGrp" hidden="{{!authority}}"> 删除群 </button></view> 
         </view>
 
+        <view class="selLineView">
+          <view  class="setlabel">昵称：</view>
+          <view class="td_grp_select">
+            <input class="inputText"  style="border:1px;background:rgba(0, 0, 0, 0);" maxlength="20" value="{{inputnickname}}" bindinput="bindModifyNicknameInput"/>
+          </view>
+          <view width="30%"><button type="primary" size="mini" bindtap="clickModifyNickname"> 修改昵称 </button></view> 
+        </view>
+
         <view class="selLineView" hidden="{{!authority}}">
           <view  class="setlabel">群名：</view>
           <view class="td_grp_select">

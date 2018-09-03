@@ -39,6 +39,8 @@ urlpatterns = [
     path('get_users', db_op.get_users, name='get_users'),
     path('modify_auth', db_op.modify_auth, name='modify_auth'),
     
+    path('modify_nickname', db_op.modify_nickname, name='modify_nickname'),
+    
     path('', views.home, name='home'),
 
     path('admin/', admin.site.urls),

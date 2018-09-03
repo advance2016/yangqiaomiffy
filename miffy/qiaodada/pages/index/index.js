@@ -19,6 +19,7 @@ Page({
     owner_sdate: '2018-08-11',
     owner_edate: '2018-08-11',    
     inputgrpname: '',
+    inputnickname: '',
     uuid: '',
     authority: '',
     group: '',
@@ -243,6 +244,86 @@ Page({
     })
   },
 
+  bindModifyNicknameInput: function (e) {
+    this.setData({
+      inputnickname: this.trim(e.detail.value)
+    })
+  },
+
+  ModifyNickname: function() {
+    var post_data = "";
+    
+    post_data = "nickname=" + this.data.inputnickname;
+    post_data += "&uuid=" + this.data.uuid;
+
+    wx.request({
+      url: this.data.weburl + '/modify_nickname?' + post_data,//上线的话必须是https，没有appId的本地请求貌似不受影响
+      data: post_data,
+      method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+      header: {
+        //设置参数内容类型为x-www-form-urlencoded
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      success: function (res) {
+        console.log(res.data);
+        var result = res.data['result'];
+
+        if (result < 0 || result == undefined) {
+          that.showReqFail(res.data['msg']);
+        } else {
+          wx.showToast({
+            title: '成功',
+            icon: 'success',
+            duration: 2000
+          })
+        }
+      },
+      fail: function (e) {
+        that.showReqFail(e.errMsg);
+      },
+      complete: function () {
+        // complete
+      }
+    })
+
+  },
+
+  clickModifyNickname: function (e) {
+    var post_data = "";
+    var that = this;
+
+    if (this.data.inputnickname == '') {
+      wx.showToast({
+        title: '请输入昵称',
+        icon: 'success',
+        duration: 2000
+      })
+      return;
+    }
+
+    var post_data = "";
+    var that = this;
+
+    wx.showModal({
+      title: '修改昵称',
+      content: '确定要修改昵称为"' + this.data.inputnickname + '"吗',
+      showCancel: true,//是否显示取消按钮
+      //cancelText: "否",//默认是“取消”
+      //cancelColor: 'skyblue',//取消文字的颜色
+      //confirmText: "是",//默认是“确定”
+      //confirmColor: 'skyblue',//确定文字的颜色
+      success: function (res) {
+        if (res.confirm) {
+          that.ModifyNickname();
+        }
+      },
+      fail: function (res) { },//接口调用失败的回调函数
+      complete: function (res) { },//接口调用结束的回调函数（调用成功、失败都会执行）
+    })
+
+
+  },
+
   modify_grp: function() {
     var post_data = "";
     var that = this;
@@ -309,7 +390,7 @@ Page({
       fail: function (res) { },//接口调用失败的回调函数
       complete: function (res) { },//接口调用结束的回调函数（调用成功、失败都会执行）
     })
-  },  
+  },
 
   del_grp: function (value) {
     var post_data = "";
@@ -674,7 +755,8 @@ Page({
 
     this.setData({ uuid:wx.getStorageSync("uuid"),
       authority: wx.getStorageSync("authority"),
-      group: wx.getStorageSync("group") });
+      group: wx.getStorageSync("group"), 
+      inputnickname: wx.getStorageSync("nickname")});
 
     // 调用函数时，传入new Date()参数，返回值是日期和时间
     var time_curr = util.formatDate(new Date());
@@ -1125,7 +1207,11 @@ Page({
         if (this.data.person_detail[i].mifei != 0) {
           this.data.grp_show_detail.mifei += nickname + " " + this.data.person_detail[i].mifei + "; ";
           this.data.grp_show_detail.mifeinum += this.data.person_detail[i].mifei;
-        }        
+        }
+        if (this.data.person_detail[i].mixiaozhu != 0) {
+          this.data.grp_show_detail.mixiaozhu += nickname + " " + this.data.person_detail[i].mixiaozhu + "; ";
+          this.data.grp_show_detail.mixiaozhunum += this.data.person_detail[i].mixiaozhu;
+        }
         if (this.data.person_detail[i].mifen != 0) {
           this.data.grp_show_detail.mifen += nickname + " " + this.data.person_detail[i].mifen + "; ";
           this.data.grp_show_detail.mifennum += this.data.person_detail[i].mifen;
